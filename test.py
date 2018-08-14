@@ -85,10 +85,8 @@ def main():
             labels = labels.to(device)
             outputs = model_test(inputs)
 
-            #_, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
-            #correct += (predicted == labels).sum().item()
-        
+	
             dcorrect_1, dcorrect_5 = accuracy(outputs,labels,topk=(1,5))
             correct_1 += dcorrect_1
             correct_5 += dcorrect_5

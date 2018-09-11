@@ -24,6 +24,7 @@ for line in lines:
         correct_5 += 1
         if label==top1:
             correct_1 += 1
+            
 acc1 = correct_1/size
 acc5 = correct_5/size
 print('evaluate on %d images, top1 is %.3f %% top5 is %.3f %%'%(size,acc1*100,acc5*100))

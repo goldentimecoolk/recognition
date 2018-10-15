@@ -1,3 +1,16 @@
+##+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Created by: Sky.J.
+## Center for Research on Intelligent System and Engineering (RISE). CASIA
+## Email: jsktt01@gmail.com
+## Time: 2018/10/10
+##
+## Instruction:
+## Evaluation code in this version is used to test datasets directly 
+## including 5000 images, without subfolders indicating class/label. 
+## Corresponding new method for fetching the dataset is implement.
+##
+##+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 from __future__ import print_function, division
 
 import torch
@@ -16,10 +29,6 @@ from torch.autograd import Variable
 import shutil
 
 from PIL import Image
-#ImageFile.LOAD_TRUNCATED_IMAGES = True
-
-
-#os.environ["CUDA_VISIBLE_DEVICES"] = "2,3,6,7"
 
 root = '/home/jsk/s/torch/params'
 num_classes = 205
@@ -43,7 +52,7 @@ class customData(Dataset):
             self.img_name = [os.path.join(img_path, line.strip().split()[0]) for line in lines]
             self.img_label = [int(line.strip().split()[1]) for line in lines]
             #print(self.img_name)  # for debug
-            l=(line.strip().split()[0] for line in lines)
+            #l=(line.strip().split()[0] for line in lines)
             #print(l)  # for debug
             #l.append(line.strip().split()[0]) for line in lines)
             #print(self.img_label)
@@ -67,19 +76,13 @@ class customData(Dataset):
         return img, label
 
 
-
 def main():
 
     data_root = '/home/jsk/s/prcv/dataset'
     data_dir = os.path.join(data_root,'v2')
-    #dataset_dir = os.path.join(data_dir,'rest_test')
-    dataset_dir = os.path.join(data_root,'v4/left3')
     dataset_dir = '/home/jsk/s/prcv/dataset/v4/dataset'
-
-    right = os.path.join(data_root,'v4/right3')
-    left = os.path.join(data_root,'v4/left3')   
-    #dataset_dir = left
-
+    gt_path = './txt/clean_dataset_v2_5010_50.txt'
+    
     pathlist = []
 
     indexes = os.listdir(dataset_dir)
@@ -103,9 +106,7 @@ def main():
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
         ])
     
-    #image_datasets = datasets.ImageFolder(dataset_dir, data_transforms)
-    #image_datasets = datasets.ImageFolder(right, data_transforms)
-    image_datasets = customData(img_path='/home/jsk/s/prcv/dataset/v4/dataset', txt_path=('./txt/clean_dataset_v2_5010_50.txt'), data_transforms=data_transforms) 
+    image_datasets = customData(img_path=dataset_dir, txt_path=(gt_path), data_transforms=data_transforms) 
     testloader = torch.utils.data.DataLoader(image_datasets, batch_size=1, shuffle=False, num_workers=32)
               
     dataset_sizes = len(image_datasets)
@@ -170,7 +171,6 @@ def main():
     top5 = 0
     total = 0
     batch = 0
-    leftpath = []
     num1 = 0
     num2 = 0
 
